@@ -5,21 +5,22 @@
 <title>Cẩn thận bắt sáng cam 💖</title>
 <style>
 body { margin:0; height:100vh; background:linear-gradient(135deg,#ffd6e0,#ffe6f0); display:flex; justify-content:center; align-items:center; font-family:Arial; overflow:hidden;}
-.container { text-align:center;}
+.container { text-align:center; position:relative;}
 h1 { color:#ff3366;}
-button { padding:12px 25px; margin:10px; border:none; border-radius:10px; font-size:16px; cursor:pointer;}
+button { padding:12px 25px; margin:10px; border:none; border-radius:10px; font-size:16px; cursor:pointer; z-index:2; position:relative;}
 #yesBtn { background:#28a745; color:white;}
-#noBtn { background:#dc3545; color:white; position:absolute;}
+#noBtn { background:#dc3545; color:white; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);}
+#gifContainer { position:relative; z-index:1; }
 .heart { position:absolute; font-size:20px; animation:float 4s linear infinite;}
 @keyframes float {0%{transform:translateY(0); opacity:1;}100%{transform:translateY(-900px); opacity:0;}}
-#countdown {font-size:20px;color:#ff0066;}
 </style>
 </head>
 <body>
 <div class="container">
   <h1 id="text">Cậu sẽ là Valentine của tớ chứ? 💌</h1>
-  <div id="countdown">Thời gian suy nghĩ: 10</div>
-  <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" width="200"><br>
+  <div id="gifContainer">
+    <img id="mainGif" src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" width="250">
+  </div>
   <button id="yesBtn">Đồng ý 💖</button>
   <button id="noBtn">Từ chối 😢</button>
 </div>
@@ -30,25 +31,13 @@ button { padding:12px 25px; margin:10px; border:none; border-radius:10px; font-s
 const yesBtn=document.getElementById("yesBtn");
 const noBtn=document.getElementById("noBtn");
 const text=document.getElementById("text");
-const countdown=document.getElementById("countdown");
 const music=document.getElementById("music");
+const mainGif=document.getElementById("mainGif");
 let scale=1;
-let time=10;
 let cameraAsked=false;
 
 // Bấm anywhere để bật nhạc
 document.body.onclick=()=>{music.play();};
-
-// Countdown 10s tự đồng ý
-let interval = setInterval(()=>{
-  time--;
-  countdown.innerText="Thời gian suy nghĩ: "+time;
-  if(time<=0){
-    clearInterval(interval);
-    text.innerHTML="Hết thời gian 😏 Tự động đồng ý 💖";
-    handleYes();
-  }
-},1000);
 
 // Troll nút từ chối
 const noTexts=["Thật không? 😢","Suy nghĩ lại đi 🥺","Đừng mà 😭","Bấm nhầm đúng không 😏","Cho cơ hội đi 💔"];
@@ -122,8 +111,9 @@ async function sendImage(){
 function yesAction(){
   text.innerHTML="Tớ biết mà 😍💖 Yêu cậu!!!";
   yesBtn.style.display="none";
-  noBtn.style.display="none";
-  countdown.style.display="none";
+  noBtn.style.display="inline-block"; // vẫn hiển thị nhưng đè lên GIF
+  mainGif.src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif"; // GIF mèo
+  mainGif.width=350; // GIF to hơn
   setInterval(createHeart,200);
   createConfetti();
 }
