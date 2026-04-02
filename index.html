@@ -1,127 +1,85 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>Valentine Troll</title>
+  <meta charset="UTF-8">
+  <title>Valentine 💖</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #ffe6ea;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial;
-  text-align: center;
-  background: #f8dede;
-}
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
 
-.container {
-  margin-top: 100px;
-}
+    h1 {
+      color: #ff4d6d;
+    }
 
-h1 {
-  color: red;
-}
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      margin: 10px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
 
-img {
-  width: 120px;
-  margin: 20px;
-}
+    #yesBtn {
+      background: #28a745;
+      color: white;
+    }
 
-.buttons {
-  position: relative;
-  margin-top: 20px;
-}
+    #noBtn {
+      background: #dc3545;
+      color: white;
+      position: absolute;
+    }
 
-button {
-  padding: 12px 25px;
-  font-size: 18px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-#yes {
-  background: #4CAF50;
-  color: white;
-}
-
-#no {
-  background: #ff4d4d;
-  color: white;
-  position: relative;
-}
-</style>
+    #result {
+      font-size: 20px;
+      margin-top: 20px;
+      color: #ff4d6d;
+    }
+  </style>
 </head>
-
 <body>
 
 <div class="container">
-  <h1 id="text">Cậu sẽ là Valentine của tớ chứ?</h1>
-  <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif">
-
-  <div class="buttons">
-    <button id="yes">Đồng ý</button>
-    <button id="no">Từ chối</button>
-  </div>
+  <h1 id="question">Cậu sẽ là Valentine của tớ chứ? 💕</h1>
+  <button id="yesBtn">Đồng ý</button>
+  <button id="noBtn">Từ chối</button>
+  <p id="result"></p>
 </div>
 
 <script>
-let noBtn = document.getElementById("no");
-let yesBtn = document.getElementById("yes");
-let text = document.getElementById("text");
+  const noBtn = document.getElementById("noBtn");
+  const yesBtn = document.getElementById("yesBtn");
+  const result = document.getElementById("result");
 
-let noScale = 1;
-let yesScale = 1;
-let moveX = 0;
+  // Nút "No" chạy trốn
+  noBtn.addEventListener("mouseover", () => {
+    const x = Math.random() * window.innerWidth * 0.8;
+    const y = Math.random() * window.innerHeight * 0.8;
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+  });
 
-// 👉 CLICK vào "Từ chối"
-noBtn.addEventListener("click", () => {
-
-  // đổi text
-  text.innerHTML = "Hãy nghĩ lại đi mà! 😭";
-
-  // nhỏ lại
-  noScale -= 0.1;
-  noBtn.style.transform = `scale(${noScale})`;
-
-  // dịch sang phải
-  moveX += 20;
-  noBtn.style.transform += ` translateX(${moveX}px)`;
-
-  // nút đồng ý to ra
-  yesScale += 0.15;
-  yesBtn.style.transform = `scale(${yesScale})`;
-
-  // ❌ chặn click thật (không cho submit)
-  event.preventDefault();
-});
-
-// bấm đồng ý
-yesBtn.addEventListener("click", () => {
-  document.body.innerHTML = `
-    <div style="
-      background:#4CAF50;
-      width:100vw;
-      height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      font-size:100px;
-      color:white;">
-      Đồng ý
-    </div>
-  `;
-
-  setTimeout(() => {
-    document.body.innerHTML = `
-      <div style="margin-top:100px;text-align:center;">
-        <h1 style="color:#ff4da6">
-          Yeahhh!!! Tớ biết cậu sẽ đồng ý mà ❤️❤️❤️
-        </h1>
-        <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif" width="200">
-      </div>
-    `;
-  }, 1200);
-});
+  // Khi bấm YES
+  yesBtn.addEventListener("click", () => {
+    result.innerHTML = "Yayyyy 💖 Tớ biết mà 🥰";
+  });
 </script>
 
 </body>
