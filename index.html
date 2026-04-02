@@ -10,7 +10,6 @@ body {
   font-family: Arial;
   text-align: center;
   background: #f8dede;
-  overflow: hidden;
 }
 
 .container {
@@ -19,15 +18,15 @@ body {
 
 h1 {
   color: red;
-  transition: 0.3s;
 }
 
 img {
-  width: 150px;
+  width: 120px;
   margin: 20px;
 }
 
 .buttons {
+  position: relative;
   margin-top: 20px;
 }
 
@@ -37,7 +36,6 @@ button {
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  margin: 10px;
   transition: 0.2s;
 }
 
@@ -49,7 +47,7 @@ button {
 #no {
   background: #ff4d4d;
   color: white;
-  position: absolute;
+  position: relative;
 }
 </style>
 </head>
@@ -58,7 +56,7 @@ button {
 
 <div class="container">
   <h1 id="text">Cậu sẽ là Valentine của tớ chứ?</h1>
-  <img id="img" src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif">
+  <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif">
 
   <div class="buttons">
     <button id="yes">Đồng ý</button>
@@ -70,31 +68,31 @@ button {
 let noBtn = document.getElementById("no");
 let yesBtn = document.getElementById("yes");
 let text = document.getElementById("text");
-let img = document.getElementById("img");
 
-let scale = 1;
+let noScale = 1;
+let yesScale = 1;
+let moveX = 0;
 
-// Hover nút "Từ chối"
 noBtn.addEventListener("mouseover", () => {
 
-  // đổi text
-  text.innerHTML = "Thôi mà, nhấn Đồng ý đi mà 🥺";
+  // đổi text giống video
+  text.innerHTML = "Hãy nghĩ lại đi mà! 😭";
 
-  // nút nhỏ lại
-  scale -= 0.1;
-  noBtn.style.transform = `scale(${scale})`;
+  // nút từ chối nhỏ lại
+  noScale -= 0.1;
+  noBtn.style.transform = `scale(${noScale})`;
 
-  // chạy lung tung
-  let x = Math.random() * (window.innerWidth - 100);
-  let y = Math.random() * (window.innerHeight - 50);
-  noBtn.style.left = x + "px";
-  noBtn.style.top = y + "px";
+  // dịch sang phải 1 chút
+  moveX += 20;
+  noBtn.style.transform += ` translateX(${moveX}px)`;
+
+  // nút đồng ý phình to
+  yesScale += 0.15;
+  yesBtn.style.transform = `scale(${yesScale})`;
 });
 
-// Bấm "Đồng ý"
+// bấm đồng ý
 yesBtn.addEventListener("click", () => {
-
-  // màn hình xanh
   document.body.innerHTML = `
     <div style="
       background:#4CAF50;
@@ -104,13 +102,11 @@ yesBtn.addEventListener("click", () => {
       justify-content:center;
       align-items:center;
       font-size:100px;
-      color:white;
-    ">
+      color:white;">
       Đồng ý
     </div>
   `;
 
-  // chuyển cảnh sau 1s
   setTimeout(() => {
     document.body.innerHTML = `
       <div style="margin-top:100px;text-align:center;">
