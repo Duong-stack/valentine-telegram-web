@@ -14,50 +14,49 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  overflow: hidden;
 }
 
 /* Container */
 .container {
   background: white;
-  padding: 25px;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  padding: 35px;
+  border-radius: 25px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
   text-align: center;
-  width: 90%;
-  max-width: 350px;
+  width: 95%;
+  max-width: 500px;
 }
 
 /* GIF */
 img {
   width: 100%;
-  max-width: 200px;
+  max-width: 320px;
   border-radius: 15px;
 }
 
 /* Text */
 h1 {
-  font-size: 20px;
+  font-size: 24px;
   color: #ff4d6d;
-  margin: 15px 0;
-}
-
-/* Buttons container */
-.buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 15px;
-  flex-wrap: wrap;
+  margin: 20px 0;
 }
 
 /* Buttons */
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
 button {
-  padding: 12px 18px;
+  padding: 16px 24px;
   border: none;
-  border-radius: 12px;
-  font-size: 16px;
+  border-radius: 15px;
+  font-size: 18px;
   cursor: pointer;
-  transition: 0.25s;
+  transition: 0.3s;
 }
 
 /* YES */
@@ -72,16 +71,36 @@ button {
   color: white;
 }
 
-/* Mobile fix */
-@media (max-width: 400px) {
-  h1 {
-    font-size: 18px;
-  }
+/* Music button */
+#musicBtn {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background: black;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+/* Floating hearts */
+.heart {
+  position: absolute;
+  color: red;
+  font-size: 20px;
+  animation: floatUp 3s linear forwards;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-200px); opacity: 0; }
 }
 </style>
 </head>
 
 <body>
+
+<button id="musicBtn">🎵</button>
 
 <div class="container">
   <img id="gif" src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif">
@@ -94,14 +113,22 @@ button {
   </div>
 </div>
 
+<!-- Nhạc -->
+<audio id="music" loop>
+  <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mp3">
+</audio>
+
 <script>
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
 const question = document.getElementById("question");
 const gif = document.getElementById("gif");
+const music = document.getElementById("music");
+const musicBtn = document.getElementById("musicBtn");
 
 let noScale = 1;
 let yesScale = 1;
+let noClickCount = 0;
 
 const questions = [
   "Cậu chắc không? 😢",
@@ -109,38 +136,66 @@ const questions = [
   "Đừng từ chối tớ mà 💔",
   "Tớ buồn đó 😭",
   "Cho tớ cơ hội nha 🥹",
-  "Pleaseeee 🥰"
+  "Pleaseeee 🥰",
+  "Lần cuối hỏi đó 😤",
+  "Thật luôn hả?? 😭"
 ];
 
-let index = 0;
+// MUSIC toggle
+musicBtn.onclick = () => {
+  if (music.paused) {
+    music.play();
+    musicBtn.innerText = "🔊";
+  } else {
+    music.pause();
+    musicBtn.innerText = "🎵";
+  }
+};
 
-// CLICK NO
-noBtn.addEventListener("click", () => {
-  question.innerText = questions[index % questions.length];
-  index++;
+// NO click
+noBtn.onclick = () => {
+  question.innerText = questions[noClickCount % questions.length];
+  noClickCount++;
 
-  // Giới hạn scale để không vỡ UI
-  noScale = Math.max(0.5, noScale - 0.1);
-  yesScale = Math.min(2.5, yesScale + 0.15);
+  noScale = Math.max(0.4, noScale - 0.1);
+  yesScale = Math.min(3, yesScale + 0.2);
 
   noBtn.style.transform = `scale(${noScale})`;
   yesBtn.style.transform = `scale(${yesScale})`;
-});
 
-// CLICK YES
-yesBtn.addEventListener("click", () => {
+  // Sau 8 lần thì biến mất
+  if (noClickCount >= 8) {
+    noBtn.style.display = "none";
+  }
+};
+
+// YES click
+yesBtn.onclick = () => {
   question.innerText = "Yayyyy 💖 Tớ biết mà 🥰";
 
-  // Ẩn nút
   yesBtn.style.display = "none";
   noBtn.style.display = "none";
 
-  // Đổi GIF
   gif.src = "https://media.giphy.com/media/111ebonMs90YLu/giphy.gif";
 
-  // Hiệu ứng nổ nhẹ
-  document.body.style.background = "#ffccd5";
-});
+  launchHearts();
+};
+
+// Hearts effect
+function launchHearts() {
+  for (let i = 0; i < 25; i++) {
+    let heart = document.createElement("div");
+    heart.innerText = "💖";
+    heart.className = "heart";
+
+    heart.style.left = Math.random() * window.innerWidth + "px";
+    heart.style.top = window.innerHeight + "px";
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 3000);
+  }
+}
 </script>
 
 </body>
