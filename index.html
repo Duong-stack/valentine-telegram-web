@@ -73,22 +73,26 @@ let noScale = 1;
 let yesScale = 1;
 let moveX = 0;
 
-noBtn.addEventListener("mouseover", () => {
+// 👉 CLICK vào "Từ chối"
+noBtn.addEventListener("click", () => {
 
-  // đổi text giống video
+  // đổi text
   text.innerHTML = "Hãy nghĩ lại đi mà! 😭";
 
-  // nút từ chối nhỏ lại
+  // nhỏ lại
   noScale -= 0.1;
   noBtn.style.transform = `scale(${noScale})`;
 
-  // dịch sang phải 1 chút
+  // dịch sang phải
   moveX += 20;
   noBtn.style.transform += ` translateX(${moveX}px)`;
 
-  // nút đồng ý phình to
+  // nút đồng ý to ra
   yesScale += 0.15;
   yesBtn.style.transform = `scale(${yesScale})`;
+
+  // ❌ chặn click thật (không cho submit)
+  event.preventDefault();
 });
 
 // bấm đồng ý
