@@ -6,7 +6,7 @@
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: Arial;
       background: #ffe6ea;
       display: flex;
       justify-content: center;
@@ -30,55 +30,88 @@
       padding: 12px 20px;
       border: none;
       border-radius: 10px;
-      font-size: 16px;
+      font-size: 18px;
       margin: 10px;
       cursor: pointer;
-      transition: 0.2s;
+      transition: 0.3s;
     }
 
     #yesBtn {
       background: #28a745;
       color: white;
+      transform: scale(1);
     }
 
     #noBtn {
       background: #dc3545;
       color: white;
-      position: absolute;
+      transform: scale(1);
     }
 
-    #result {
-      font-size: 20px;
-      margin-top: 20px;
-      color: #ff4d6d;
+    img {
+      width: 180px;
+      margin-bottom: 15px;
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
 
 <div class="container">
+  <!-- Giphy ban đầu -->
+  <img id="gif" src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif">
+
   <h1 id="question">Cậu sẽ là Valentine của tớ chứ? 💕</h1>
+
   <button id="yesBtn">Đồng ý</button>
   <button id="noBtn">Từ chối</button>
-  <p id="result"></p>
 </div>
 
 <script>
   const noBtn = document.getElementById("noBtn");
   const yesBtn = document.getElementById("yesBtn");
-  const result = document.getElementById("result");
+  const question = document.getElementById("question");
+  const gif = document.getElementById("gif");
 
-  // Nút "No" chạy trốn
-  noBtn.addEventListener("mouseover", () => {
-    const x = Math.random() * window.innerWidth * 0.8;
-    const y = Math.random() * window.innerHeight * 0.8;
-    noBtn.style.left = x + "px";
-    noBtn.style.top = y + "px";
+  let noScale = 1;
+  let yesScale = 1;
+
+  const questions = [
+    "Cậu chắc không? 😢",
+    "Suy nghĩ lại đi mà 🥺",
+    "Đừng từ chối tớ mà 💔",
+    "Tớ buồn đó 😭",
+    "Cho tớ cơ hội nha 🥹",
+    "Pleaseeee 🥰"
+  ];
+
+  let index = 0;
+
+  // Khi bấm NO
+  noBtn.addEventListener("click", () => {
+    // đổi câu hỏi
+    question.innerText = questions[index % questions.length];
+    index++;
+
+    // nút No nhỏ lại
+    noScale -= 0.15;
+    noBtn.style.transform = `scale(${noScale})`;
+
+    // nút Yes to lên
+    yesScale += 0.2;
+    yesBtn.style.transform = `scale(${yesScale})`;
   });
 
   // Khi bấm YES
   yesBtn.addEventListener("click", () => {
-    result.innerHTML = "Yayyyy 💖 Tớ biết mà 🥰";
+    question.innerText = "Yayyyy 💖 Tớ biết mà 🥰";
+
+    // ẩn nút
+    yesBtn.style.display = "none";
+    noBtn.style.display = "none";
+
+    // đổi Giphy
+    gif.src = "https://media.giphy.com/media/111ebonMs90YLu/giphy.gif";
   });
 </script>
 
