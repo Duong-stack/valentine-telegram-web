@@ -1,118 +1,146 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Valentine 💖</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial;
-      background: #ffe6ea;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      text-align: center;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine 💖</title>
 
-    .container {
-      background: white;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(135deg, #ffd6dc, #ffeef1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
-    h1 {
-      color: #ff4d6d;
-    }
+/* Container */
+.container {
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  text-align: center;
+  width: 90%;
+  max-width: 350px;
+}
 
-    button {
-      padding: 12px 20px;
-      border: none;
-      border-radius: 10px;
-      font-size: 18px;
-      margin: 10px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
+/* GIF */
+img {
+  width: 100%;
+  max-width: 200px;
+  border-radius: 15px;
+}
 
-    #yesBtn {
-      background: #28a745;
-      color: white;
-      transform: scale(1);
-    }
+/* Text */
+h1 {
+  font-size: 20px;
+  color: #ff4d6d;
+  margin: 15px 0;
+}
 
-    #noBtn {
-      background: #dc3545;
-      color: white;
-      transform: scale(1);
-    }
+/* Buttons container */
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
 
-    img {
-      width: 180px;
-      margin-bottom: 15px;
-      border-radius: 10px;
-    }
-  </style>
+/* Buttons */
+button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+/* YES */
+#yesBtn {
+  background: #28a745;
+  color: white;
+}
+
+/* NO */
+#noBtn {
+  background: #dc3545;
+  color: white;
+}
+
+/* Mobile fix */
+@media (max-width: 400px) {
+  h1 {
+    font-size: 18px;
+  }
+}
+</style>
 </head>
+
 <body>
 
 <div class="container">
-  <!-- Giphy ban đầu -->
   <img id="gif" src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif">
 
   <h1 id="question">Cậu sẽ là Valentine của tớ chứ? 💕</h1>
 
-  <button id="yesBtn">Đồng ý</button>
-  <button id="noBtn">Từ chối</button>
+  <div class="buttons">
+    <button id="yesBtn">Đồng ý</button>
+    <button id="noBtn">Từ chối</button>
+  </div>
 </div>
 
 <script>
-  const noBtn = document.getElementById("noBtn");
-  const yesBtn = document.getElementById("yesBtn");
-  const question = document.getElementById("question");
-  const gif = document.getElementById("gif");
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const question = document.getElementById("question");
+const gif = document.getElementById("gif");
 
-  let noScale = 1;
-  let yesScale = 1;
+let noScale = 1;
+let yesScale = 1;
 
-  const questions = [
-    "Cậu chắc không? 😢",
-    "Suy nghĩ lại đi mà 🥺",
-    "Đừng từ chối tớ mà 💔",
-    "Tớ buồn đó 😭",
-    "Cho tớ cơ hội nha 🥹",
-    "Pleaseeee 🥰"
-  ];
+const questions = [
+  "Cậu chắc không? 😢",
+  "Suy nghĩ lại đi mà 🥺",
+  "Đừng từ chối tớ mà 💔",
+  "Tớ buồn đó 😭",
+  "Cho tớ cơ hội nha 🥹",
+  "Pleaseeee 🥰"
+];
 
-  let index = 0;
+let index = 0;
 
-  // Khi bấm NO
-  noBtn.addEventListener("click", () => {
-    // đổi câu hỏi
-    question.innerText = questions[index % questions.length];
-    index++;
+// CLICK NO
+noBtn.addEventListener("click", () => {
+  question.innerText = questions[index % questions.length];
+  index++;
 
-    // nút No nhỏ lại
-    noScale -= 0.15;
-    noBtn.style.transform = `scale(${noScale})`;
+  // Giới hạn scale để không vỡ UI
+  noScale = Math.max(0.5, noScale - 0.1);
+  yesScale = Math.min(2.5, yesScale + 0.15);
 
-    // nút Yes to lên
-    yesScale += 0.2;
-    yesBtn.style.transform = `scale(${yesScale})`;
-  });
+  noBtn.style.transform = `scale(${noScale})`;
+  yesBtn.style.transform = `scale(${yesScale})`;
+});
 
-  // Khi bấm YES
-  yesBtn.addEventListener("click", () => {
-    question.innerText = "Yayyyy 💖 Tớ biết mà 🥰";
+// CLICK YES
+yesBtn.addEventListener("click", () => {
+  question.innerText = "Yayyyy 💖 Tớ biết mà 🥰";
 
-    // ẩn nút
-    yesBtn.style.display = "none";
-    noBtn.style.display = "none";
+  // Ẩn nút
+  yesBtn.style.display = "none";
+  noBtn.style.display = "none";
 
-    // đổi Giphy
-    gif.src = "https://media.giphy.com/media/111ebonMs90YLu/giphy.gif";
-  });
+  // Đổi GIF
+  gif.src = "https://media.giphy.com/media/111ebonMs90YLu/giphy.gif";
+
+  // Hiệu ứng nổ nhẹ
+  document.body.style.background = "#ffccd5";
+});
 </script>
 
 </body>
